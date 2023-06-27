@@ -44,6 +44,16 @@ app.get('/',(req,res)=>{
         return res.json({valid:false})
     }
 })
+
+app.get('/registro',(req,res)=>{
+    if (req.session.idUsuario){
+        return res.json({valid:true,idUsuario:req.session.idUsuario})
+    }else{
+        return res.json({valid:false})
+    }
+})
+
+
 app.post('/signup',(req,res)=>{
     const sql = "INSERT INTO usuarios (`nombre`,`correo`,`contraseña`) VALUES (?)";
     const values=[
