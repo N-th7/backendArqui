@@ -33,7 +33,7 @@ app.use(cookieParser());
 const db =mysql.createConnection({
   host:"localhost", 
   user:"root", 
-  password:"ServilyLulu123",
+  password:"",
   database:"gastos_web"
 })
 
@@ -103,6 +103,27 @@ app.post('/login',(req,res)=>{
             
         }else{
             return res.json({Login:false});
+        }
+    })
+})
+
+
+app.post('/reporte',(req,res)=>{
+    
+    const sql ="SELECT * FROM movimientos WHERE `idUsuario`= ?";
+
+    db.query(sql,[req.body.idUsuario],(err,result)=>{
+        if(err){
+            return res.json({Message:"Error"});
+        }
+        if(result.length > 0){
+            req.session.data=result[0].data
+            var info=req.session.data
+            console.log("entro")
+            return res.json({Movimientos:result.length,Res:result});
+            
+        }else{
+            return res.json({Movimientos:0});
         }
     })
 })
