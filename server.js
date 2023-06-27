@@ -33,8 +33,8 @@ app.use(cookieParser());
 const db =mysql.createConnection({
   host:"localhost", 
   user:"root", 
-  password:"ServilyLulu123",
-  database:"gastos_web"
+  password:"Furiosa1234#",
+  database:"gasto_web"
 })
 
 app.get('/',(req,res)=>{
