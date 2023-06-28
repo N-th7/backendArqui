@@ -44,16 +44,6 @@ app.get('/',(req,res)=>{
         return res.json({valid:false})
     }
 })
-
-app.get('/registro',(req,res)=>{
-    if (req.session.idUsuario){
-        return res.json({valid:true,idUsuario:req.session.idUsuario})
-    }else{
-        return res.json({valid:false})
-    }
-})
-
-
 app.post('/signup',(req,res)=>{
     const sql = "INSERT INTO usuarios (`nombre`,`correo`,`contraseña`) VALUES (?)";
     const values=[
@@ -113,6 +103,26 @@ app.post('/login',(req,res)=>{
             
         }else{
             return res.json({Login:false});
+        }
+    })
+})
+
+
+app.post('/reporte',(req,res)=>{
+    
+    const sql ="SELECT * FROM movimientos WHERE `idUsuario`= ?";
+
+    db.query(sql,[req.body.idUsuario],(err,result)=>{
+        if(err){
+            return res.json({Message:"Error"});
+        }
+        if(result.length > 0){
+            req.session.data=result[0].data
+            var info=req.session.data
+            return res.json({Movimientos:result.length,Res:result});
+            
+        }else{
+            return res.json({Movimientos:0});
         }
     })
 })
