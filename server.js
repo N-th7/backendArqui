@@ -4,10 +4,8 @@ import express from "express";
 import mysql from "mysql";
 import cors from "cors";
 import bodyParser from "body-parser";
-//const express = require("express");
-//const mysql= require('mysql');
-//const cors =require('cors');
-//const {check,validationResult}=require('express-validator')
+import {sha256,sha224} from 'js-sha256'
+import bcrypt from 'bcryptjs'
 
 const app= express();
 
@@ -44,12 +42,20 @@ app.get('/',(req,res)=>{
         return res.json({valid:false})
     }
 })
+
 app.post('/signup',(req,res)=>{
     const sql = "INSERT INTO usuarios (`nombre`,`correo`,`contraseña`) VALUES (?)";
+    //var hash = bcrypt.hashSync(req.body.password, 8);
+    
+    var hash = sha256.create();
+    hash.update(req.body.password);
+    hash.hex;
+    console.log(hash)
+    
     const values=[
         req.body.name,
         req.body.email,
-        req.body.password
+        hash
     ]
     db.query(sql,[values],(err,data)=>{
         if(err){
@@ -81,24 +87,30 @@ app.post('/Registro',(req,res)=>{
 })
 
 app.post('/login',(req,res)=>{
-    
     const sql ="SELECT * FROM usuarios WHERE `correo`= ? AND `contraseña` = ?";
-    db.query(sql,[req.body.email,req.body.password],(err,result)=>{
+
+    
+    var hash = sha256.create();
+    hash.update(req.body.password);
+    hash.hex;
+    
+   //var hash = bcrypt.hashSync(req.body.password, 8);
+
+    db.query(sql,[req.body.email,hash],(err,result)=>{
+        console.log(hash)
         if(err){
             return res.json({Message:"Error"});
         }
-        if(result.length > 0){
+        if(result.length > 0 ){
             req.session.idUsuario=result[0].idUsuario;
             req.session.nombre=result[0].nombre;
             req.session.correo=result[0].correo;
             var id=req.session.idUsuario
             var nombre=req.session.nombre
             var correo=req.session.correo
-            console.log(nombre)
-            console.log("entro")
+            
             return (
                 res.json({Login:true, idUsuario:id, nombre:nombre, correo:correo})
-
                 );
             
         }else{
