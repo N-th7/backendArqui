@@ -1,11 +1,10 @@
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import express from "express";
-import mysql from "mysql";
 import cors from "cors";
 import bodyParser from "body-parser";
-import {sha256,sha224} from 'js-sha256'
-import bcrypt from 'bcryptjs'
+import db from "./db/db.js"
+
 
 const app= express();
 
@@ -28,12 +27,7 @@ app.use(session ({
 app.use(cookieParser());
 
 
-const db =mysql.createConnection({
-  host:"localhost", 
-  user:"root", 
-  password:"Furiosa1234#",
-  database:"gasto_web"
-})
+
 
 app.get('/',(req,res)=>{
     if (req.session.idUsuario){
@@ -45,17 +39,10 @@ app.get('/',(req,res)=>{
 
 app.post('/signup',(req,res)=>{
     const sql = "INSERT INTO usuarios (`nombre`,`correo`,`contraseña`) VALUES (?)";
-    //var hash = bcrypt.hashSync(req.body.password, 8);
-    
-    var hash = sha256.create();
-    hash.update(req.body.password);
-    hash.hex;
-    console.log(hash)
-    
     const values=[
         req.body.name,
         req.body.email,
-        hash
+        req.body.password
     ]
     db.query(sql,[values],(err,data)=>{
         if(err){
@@ -88,16 +75,7 @@ app.post('/Registro',(req,res)=>{
 
 app.post('/login',(req,res)=>{
     const sql ="SELECT * FROM usuarios WHERE `correo`= ? AND `contraseña` = ?";
-
-    
-    var hash = sha256.create();
-    hash.update(req.body.password);
-    hash.hex;
-    
-   //var hash = bcrypt.hashSync(req.body.password, 8);
-
-    db.query(sql,[req.body.email,hash],(err,result)=>{
-        console.log(hash)
+    db.query(sql,[req.body.email,req.body.password],(err,result)=>{
         if(err){
             return res.json({Message:"Error"});
         }
