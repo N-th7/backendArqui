@@ -139,6 +139,47 @@ app.post('/reporte',(req,res)=>{
     })
 })
 
+app.post('/reporte',(req,res)=>{
+    
+    const sql ="SELECT * FROM movimientos WHERE `idUsuario`= ?";
+
+    db.query(sql,[req.body.idUsuario],(err,result)=>{
+        if(err){
+            return res.json({Message:"Error"});
+        }
+        if(result.length > 0){
+            req.session.data=result[0].data
+            var info=req.session.data
+            console.log("entro")
+            return res.json({Movimientos:result.length,Res:result});
+            
+        }else{
+            return res.json({Movimientos:0});
+        }
+    })
+})
+
+app.post('/reporte/borrarMov',(req,res)=>{
+    console.log(req.body.idMovimiento)
+    const sql ="DELETE FROM movimientos WHERE `idMovimiento`= ?";
+    db.query(sql,[req.body.idMovimiento],(err,result)=>{
+        if(err){
+            return res.json({Message:"Error"});
+        }
+        if(result.length > 0){
+            req.session.data=result[0].data
+            var info=req.session.data
+            return res.json({Movimientos:result.length,Res:result});
+            
+        }else{
+            return res.json({Movimientos:0});
+        }
+    })
+})
+
+
+
+
 
 app.listen(8081,()=>{
     console.log("listening")
