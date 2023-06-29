@@ -31,11 +31,16 @@ app.use(cookieParser());
 
 
 const db =mysql.createConnection({
-  host:"localhost", 
+  host:"192.168.1.3", 
   user:"root", 
-  password:"",
-  database:"gastos_web"
+  password:"Furiosa1234#",
+  database:"controlgastos",
 })
+
+db.connect()
+
+console.log(db)
+
 
 app.get('/',(req,res)=>{
     if (req.session.idUsuario){
