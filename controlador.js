@@ -13,6 +13,7 @@ app.use(cors({
     methods:["POST","GET"],
     credentials:true
 }));
+
 app.use(bodyParser.json())
 app.use(express.json())
 app.use(session ({
@@ -24,7 +25,7 @@ app.use(session ({
         maxAge:1000*60*60*24
     }
 }));
-app.use(cookieParser());
+//app.use(cookieParser());
 
 
 
