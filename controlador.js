@@ -27,9 +27,6 @@ app.use(session ({
 }));
 //app.use(cookieParser());
 
-
-
-
 app.get('/',(req,res)=>{
     if (req.session.idUsuario){
         return res.json({valid:true,idUsuario:req.session.idUsuario})
@@ -65,7 +62,7 @@ app.post('/Registro',(req,res)=>{
         req.body.idUsuario
     ]
     db.query(sql,[values],(err,data)=>{
-        console.log("entro")
+        //console.log("entro")
         if(err){
             return res.json("Error"); 
         }
@@ -129,7 +126,7 @@ app.post('/reporte',(req,res)=>{
         if(result.length > 0){
             req.session.data=result[0].data
             var info=req.session.data
-            console.log("entro")
+            //console.log("entro")
             return res.json({Movimientos:result.length,Res:result});
             
         }else{
